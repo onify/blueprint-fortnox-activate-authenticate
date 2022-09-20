@@ -1,0 +1,55 @@
+extends ../views/form/default-form
+
+block append formConfig
+
+  -var activateMode = (form.queryparam.action == 'activate')
+
+  +formOptions({
+    submitButtonName: "Activate Onify in Fortnox",
+    hideSubmitButton: !activateMode,
+    hideBackButton: true
+  })
+
+block formContent
+
+  if (activateMode)
+
+    +formElement({
+      name: "code",
+      label: 'Authentication code',
+      value: form.queryparam.code,
+      helpText: "This is the auth code sent from Fortnox"
+    })
+
+  else 
+
+    +formElement({
+      name: "formUrl",
+      label: "Form URL",
+      value: `http://${user.request.host}/form/${form.slug}`,
+      helpText: "Make sure this is URL is correct. If not, please update"
+    })
+
+    +formElement({
+      name: "scopes",
+      label: "Scopes",
+      value: "invoice order article project salary costcenter payment offer price",
+      helpText: "Please read more about scopes [here](https://developer.fortnox.se/general/scopes/)"
+    })
+
+    +formElement({
+      type: "runWorkflow",
+      name: "activationUrl",
+      buttonLabel: "Generate activation URL",
+      workflow: "fortnox-generate-activation-url",
+      timeout: 10,
+      input: {
+        formUrl: "{formUrl}",
+        scopes: "{scopes}"
+      }
+    })
+
+    +formElement({
+      type: "simpleText",
+      value: 'Activation URL >>> [Click here to start activation process]({activationUrl})'
+    })

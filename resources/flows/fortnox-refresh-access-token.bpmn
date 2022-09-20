@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0irn58g" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.2.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.17.0">
+  <bpmn:collaboration id="Collaboration_1jmj2q1">
+    <bpmn:participant id="Participant_1d6tyip" name="REFRESH FORTNOX ACCESS-TOKEN" processRef="fortnox-refresh-access-token" />
+  </bpmn:collaboration>
+  <bpmn:process id="fortnox-refresh-access-token" name="Refresh Fortnox Access-Token" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_0x1hg90">
+      <bpmn:lane id="Lane_06efhfi" name="FORTNOX">
+        <bpmn:flowNodeRef>refresh-access-token</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_0vte7ru" name="ONIFY">
+        <bpmn:flowNodeRef>get-fortnox-settings</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>update-fortnox-settings</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>end</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>start</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:serviceTask id="refresh-access-token" name="Refresh Fortnox Access-Token">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="url">https://apps.fortnox.se/oauth-v1/token</camunda:inputParameter>
+            <camunda:inputParameter name="responseType">json</camunda:inputParameter>
+            <camunda:inputParameter name="body">grant_type=refresh_token&amp;refresh_token=${environment.output.fortnoxSettings._fortnox_access_token.refresh_token}</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Content-Type">application/x-www-form-urlencoded</camunda:entry>
+                <camunda:entry key="Authorization">${content.input.authToken}</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="throwHttpErrors">${true}</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>httpRequest</camunda:connectorId>
+        </camunda:connector>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="authToken">
+            <camunda:script scriptFormat="js">let authToken = 'Basic ' + Buffer.from(environment.output.fortnoxSettings._fortnox_app_clientid + ':' + environment.output.fortnoxSettings._fortnox_app_clientsecret).toString('base64');
+next(null, authToken);</camunda:script>
+          </camunda:inputParameter>
+          <camunda:inputParameter name="state">
+            <camunda:script scriptFormat="js">next(null, {name: content.name, id: content.id});</camunda:script>
+          </camunda:inputParameter>
+          <camunda:outputParameter name="accessToken">${content.output.body}</camunda:outputParameter>
+          <camunda:outputParameter name="state">
+            <camunda:script scriptFormat="js">next(null, {id: content.id, result: {done: true}});</camunda:script>
+          </camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0kbldvw</bpmn:incoming>
+      <bpmn:outgoing>Flow_04tq483</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="get-fortnox-settings" name="Get Fortnox settings">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="query">
+              <camunda:map>
+                <camunda:entry key="tag">fortnox</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="url">/my/config/settings</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>onifyApiRequest</camunda:connectorId>
+        </camunda:connector>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="state">
+            <camunda:script scriptFormat="js">next(null, {name: content.name, id: content.id});</camunda:script>
+          </camunda:inputParameter>
+          <camunda:outputParameter name="fortnoxSettings">${content.output.body}</camunda:outputParameter>
+          <camunda:outputParameter name="state">
+            <camunda:script scriptFormat="js">next(null, {id: content.id, result: {done: true}});</camunda:script>
+          </camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_10xl06i</bpmn:incoming>
+      <bpmn:outgoing>Flow_0kbldvw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="update-fortnox-settings" name="Update Fortnox settings">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">/admin/config/settings/_fortnox_access_token?refresh=true</camunda:inputParameter>
+            <camunda:inputParameter name="method">PUT</camunda:inputParameter>
+            <camunda:inputParameter name="payload">
+              <camunda:script scriptFormat="js">environment.output.accessToken.timestamp = new Date().toISOString();
+
+next(null, {
+ value: JSON.stringify(environment.output.accessToken)
+});</camunda:script>
+            </camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>onifyApiRequest</camunda:connectorId>
+        </camunda:connector>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="state">
+            <camunda:script scriptFormat="js">next(null, {name: content.name, id: content.id});</camunda:script>
+          </camunda:inputParameter>
+          <camunda:outputParameter name="output">${environment.output.accessToken}</camunda:outputParameter>
+          <camunda:outputParameter name="state">
+            <camunda:script scriptFormat="js">next(null, {id: content.id, result: {done: true}});</camunda:script>
+          </camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_04tq483</bpmn:incoming>
+      <bpmn:outgoing>Flow_11dm9qw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="end" name="Access-Token refreshed">
+      <bpmn:extensionElements />
+      <bpmn:incoming>Flow_11dm9qw</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_10xl06i" sourceRef="start" targetRef="get-fortnox-settings" />
+    <bpmn:sequenceFlow id="Flow_11dm9qw" sourceRef="update-fortnox-settings" targetRef="end" />
+    <bpmn:sequenceFlow id="Flow_04tq483" sourceRef="refresh-access-token" targetRef="update-fortnox-settings" />
+    <bpmn:sequenceFlow id="Flow_0kbldvw" sourceRef="get-fortnox-settings" targetRef="refresh-access-token" />
+    <bpmn:startEvent id="start" name="Start Refresh Access-Token">
+      <bpmn:outgoing>Flow_10xl06i</bpmn:outgoing>
+    </bpmn:startEvent>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1jmj2q1">
+      <bpmndi:BPMNShape id="Participant_1d6tyip_di" bpmnElement="Participant_1d6tyip" isHorizontal="true">
+        <dc:Bounds x="155" y="110" width="1000" height="380" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0vte7ru_di" bpmnElement="Lane_0vte7ru" isHorizontal="true">
+        <dc:Bounds x="185" y="110" width="970" height="200" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_06efhfi_di" bpmnElement="Lane_06efhfi" isHorizontal="true">
+        <dc:Bounds x="185" y="310" width="970" height="180" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0kbldvw_di" bpmnElement="Flow_0kbldvw">
+        <di:waypoint x="525" y="210" />
+        <di:waypoint x="560" y="210" />
+        <di:waypoint x="560" y="400" />
+        <di:waypoint x="595" y="400" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04tq483_di" bpmnElement="Flow_04tq483">
+        <di:waypoint x="695" y="400" />
+        <di:waypoint x="730" y="400" />
+        <di:waypoint x="730" y="210" />
+        <di:waypoint x="765" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11dm9qw_di" bpmnElement="Flow_11dm9qw">
+        <di:waypoint x="865" y="210" />
+        <di:waypoint x="987" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10xl06i_di" bpmnElement="Flow_10xl06i">
+        <di:waypoint x="333" y="210" />
+        <di:waypoint x="425" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_0j2a6mq_di" bpmnElement="refresh-access-token">
+        <dc:Bounds x="595" y="360" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0yibfwb_di" bpmnElement="get-fortnox-settings">
+        <dc:Bounds x="425" y="170" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0gg8t68" bpmnElement="update-fortnox-settings">
+        <dc:Bounds x="765" y="170" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ci9wiv_di" bpmnElement="end" bioc:stroke="#e53935" bioc:fill="#ffcdd2" color:background-color="#ffcdd2" color:border-color="#e53935">
+        <dc:Bounds x="987" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="971" y="235" width="68" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_00nxhm6_di" bpmnElement="start" bioc:stroke="#43a047" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#43a047">
+        <dc:Bounds x="297" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="282" y="235" width="68" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

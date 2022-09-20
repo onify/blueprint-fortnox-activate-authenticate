@@ -1,0 +1,64 @@
+{
+  "form": [
+    {
+      "slug": "fortnox-activate",
+      "title": "Activate Fortnox integration with Onify",
+      "name": "Activate Fortnox integration with Onify",
+      "template": {
+        "form": "/forms/fortnox-activate.pug",
+        "result": "/forms/fortnox-activate-result.pug"
+      },
+      "test": false,
+      "role": [
+        "admin"
+      ],
+      "tag": [
+        "fortnox"
+      ],
+      "noninteractive": false,
+      "process": {
+        "workflow": "fortnox-generate-access-token",
+        "title": "Generate (Activate) Fortnox Access-Token",
+        "description": "Generate Access-Token initiated by {{user.key}}"
+      }
+    }
+  ],
+  "workflow": [
+    {
+      "key": "fortnox-generate-access-token",
+      "name": "Generate (Activate) Fortnox Access-Token",
+      "bpmnresource": "/flows/fortnox-generate-access-token.bpmn",
+      "state": [],
+      "owner": null,
+      "impersonate": null,
+      "icon": null,
+      "tag": [
+        "fortnox"
+      ]
+    },
+    {
+      "key": "fortnox-generate-activation-url",
+      "name": "Generate activation URL for Fortnox",
+      "bpmnresource": "/flows/fortnox-generate-activation-url.bpmn",
+      "state": [],
+      "owner": null,
+      "impersonate": null,
+      "icon": null,
+      "tag": [
+        "fortnox"
+      ]
+    },
+    {
+      "key": "fortnox-refresh-access-token",
+      "name": "Refresh Fortnox Access-Token",
+      "bpmnresource": "/flows/fortnox-refresh-access-token.bpmn",
+      "state": [],
+      "owner": null,
+      "impersonate": null,
+      "icon": null,
+      "tag": [
+        "fortnox"
+      ]
+    }
+  ]
+}
