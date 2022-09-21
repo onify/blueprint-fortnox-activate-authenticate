@@ -2,32 +2,19 @@ extends ../views/form/default-form
 
 block append formConfig
 
-  -var activateMode = (form.queryparam.action == 'activate')
-
   +formOptions({
     submitButtonName: "Activate Onify in Fortnox",
-    hideSubmitButton: !activateMode,
     hideBackButton: true
   })
 
 block formContent
 
-  if (activateMode)
-
+    //label: "Please describe the recurring problem",
     +formElement({
-      name: "code",
-      label: 'Authentication code',
-      value: form.queryparam.code,
-      helpText: "This is the auth code sent from Fortnox"
-    })
-
-  else 
-
-    +formElement({
-      name: "formUrl",
-      label: "Form URL",
-      value: `http://${user.request.host}/form/${form.slug}`,
-      helpText: "Make sure this is URL is correct. If not, please update"
+      name: "redirectURI",
+      label: "Redirect URI",
+      value: "http://localhost:2022",
+      helpText: "If you are unsure of this, please contact Onify via [support@onify.co](mailto:support@onify.co)"
     })
 
     +formElement({
@@ -37,6 +24,8 @@ block formContent
       helpText: "Please read more about scopes [here](https://developer.fortnox.se/general/scopes/)"
     })
 
+    //https://developer.fortnox.se/general/authentication/
+  
     +formElement({
       type: "runWorkflow",
       name: "activationUrl",
@@ -44,12 +33,26 @@ block formContent
       workflow: "fortnox-generate-activation-url",
       timeout: 10,
       input: {
-        formUrl: "{formUrl}",
+        redirectURI: "{redirectURI}",
         scopes: "{scopes}"
       }
     })
 
     +formElement({
       type: "simpleText",
-      value: 'Activation URL >>> [Click here to start activation process]({activationUrl})'
+      value: '',
+      helpText: '<a href="{activationUrl}" target="_blank">Click here to autheticate and activate Onify in Fortnox</a>',
+      visible: {
+        ifField: "activationUrl",
+        containsValue: true
+      }
     })
+
+    +formElement({
+      name: "code",
+      label: 'Authentication code',
+      required: true,
+      helpText: "First click on the activiation link and then copy the authentication code from the URL"
+    })
+
+

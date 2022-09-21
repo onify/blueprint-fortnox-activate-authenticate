@@ -39,20 +39,15 @@
     <bpmn:scriptTask id="generate-url" name="Generate URL" scriptFormat="js">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:outputParameter name="Output_355ujdm">
-            <camunda:script scriptFormat="js">
-console.log(content.output);
-next();</camunda:script>
-          </camunda:outputParameter>
           <camunda:outputParameter name="output">${content.output}</camunda:outputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1oehyqs</bpmn:incoming>
       <bpmn:outgoing>Flow_1s9vqqw</bpmn:outgoing>
-      <bpmn:script>const formUrl = encodeURIComponent(environment.variables.input.formUrl + '?action=activate');
+      <bpmn:script>const redirectURI = encodeURIComponent(environment.variables.input.redirectURI);
 const scopes = encodeURIComponent(environment.variables.input.scopes);
 
-const activateUrl = `https://apps.fortnox.se/oauth-v1/auth?client_id=${environment.output.fortnoxSettings._fortnox_app_clientid}&amp;redirect_uri=${formUrl}&amp;scope=${scopes}&amp;state=onifyrox&amp;access_type=offline&amp;response_type=code`
+const activateUrl = `https://apps.fortnox.se/oauth-v1/auth?client_id=${environment.output.fortnoxSettings._fortnox_app_clientid}&amp;redirect_uri=${redirectURI}&amp;scope=${scopes}&amp;state=onifyrox&amp;access_type=offline&amp;response_type=code`
 
 next(null, activateUrl);</bpmn:script>
     </bpmn:scriptTask>

@@ -46,15 +46,21 @@ curl -X POST "<ONIFY-HUB-API-URL>/api/v2/setup/database/config/import" -H "accep
 
 ## Activate (and authenticate) integration with Fortnox
 
-1. Go to `<ONIFY-HUB-APP-URL>/form/fortnox-activate`
-2. Validate _Form URL_ (and modify if needed)
-3. Validate _Scopes_ (and modify if needed)
-4. Click _Generate activation URL_ 
-5. Click on the generated action link
-6. Enter username and password for Fortnox
-7. Approve access for user and Onify
-8. Validate _Authentication code_
-9. Click _Activate Onify in Fortnox_ 
+* Create activation link for Fortnox (in Onify)
+  1. Go to `<ONIFY-HUB-APP-URL>/form/fortnox-activate`
+  2. Enter _Redirect URI_
+  3. Enter _Scopes_ (and modify if needed)
+  4. Click _Generate activation URL_ 
+  5. Click on the generated action link
+* Authenticate user for Onify (in Fortnox)
+  1. Enter username and password for Fortnox
+  2. Approve access for user and Onify
+  4. Fortnox will redirect you to a website that does not exist
+  5. Copy the code (eg. `035411fc-ce95-4c4a-bc15-273daf5ddd67`) from the url
+* Activate and authenticate Fortnox (in Onify)
+  1. Go back to the activation form
+  2. Paste the code in _Authentication code_
+  3. Click _Activate Onify in Fortnox_ 
 
 > For more information about authenticating against Fortnox, please read [Authorizing your integration](https://developer.fortnox.se/general/authentication/).
 

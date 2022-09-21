@@ -64,7 +64,7 @@ next(null, {
           <camunda:inputParameter name="state">
             <camunda:script scriptFormat="js">next(null, {name: content.name, id: content.id});</camunda:script>
           </camunda:inputParameter>
-          <camunda:outputParameter name="output">Access-Token generated and saved in &lt;a href='/admin/settings/_fortnox_access_token'&gt;settings&lt;/a&gt; </camunda:outputParameter>
+          <camunda:outputParameter name="output">Access-Token generated and saved in &lt;a href='/admin/settings/_fortnox_access_token' target='_blank'&gt;settings&lt;/a&gt; </camunda:outputParameter>
           <camunda:outputParameter name="state">
             <camunda:script scriptFormat="js">next(null, {id: content.id, result: {done: true}});</camunda:script>
           </camunda:outputParameter>
@@ -92,7 +92,7 @@ next(null, {
             <camunda:inputParameter name="method">POST</camunda:inputParameter>
             <camunda:inputParameter name="url">https://apps.fortnox.se/oauth-v1/token</camunda:inputParameter>
             <camunda:inputParameter name="responseType">json</camunda:inputParameter>
-            <camunda:inputParameter name="body">grant_type=authorization_code&amp;code=${environment.variables.submit.code}</camunda:inputParameter>
+            <camunda:inputParameter name="body">grant_type=authorization_code&amp;code=${environment.variables.submit.code}&amp;redirect_uri=${environment.variables.submit.redirectURI}</camunda:inputParameter>
             <camunda:inputParameter name="headers">
               <camunda:map>
                 <camunda:entry key="Content-Type">application/x-www-form-urlencoded</camunda:entry>
