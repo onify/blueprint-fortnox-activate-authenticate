@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0glw33w" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.2.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.17.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0glw33w" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.10.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.17.0">
   <bpmn:collaboration id="Collaboration_1pbwea9">
     <bpmn:participant id="Participant_00s75tl" name="GENERATE FORTNOX ACCESS-TOKEN" processRef="fortnox-generate-access-token" />
   </bpmn:collaboration>
@@ -54,7 +54,8 @@
               <camunda:script scriptFormat="js">environment.output.accessToken.timestamp = new Date().toISOString();
 
 next(null, {
- value: JSON.stringify(environment.output.accessToken)
+ value: JSON.stringify(environment.output.accessToken),
+ type: 'object'
 });</camunda:script>
             </camunda:inputParameter>
           </camunda:inputOutput>
@@ -139,26 +140,6 @@ next(null, authToken);</camunda:script>
         <dc:Bounds x="190" y="110" width="850" height="220" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_1rhino0_di" bpmnElement="Flow_1rhino0">
-        <di:waypoint x="820" y="200" />
-        <di:waypoint x="882" y="200" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_11akaox_di" bpmnElement="Flow_11akaox">
-        <di:waypoint x="338" y="200" />
-        <di:waypoint x="400" y="200" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_18b6pju_di" bpmnElement="Flow_18b6pju">
-        <di:waypoint x="670" y="410" />
-        <di:waypoint x="695" y="410" />
-        <di:waypoint x="695" y="200" />
-        <di:waypoint x="720" y="200" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1epcc34_di" bpmnElement="Flow_1epcc34">
-        <di:waypoint x="500" y="200" />
-        <di:waypoint x="535" y="200" />
-        <di:waypoint x="535" y="410" />
-        <di:waypoint x="570" y="410" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="start" bioc:stroke="#43a047" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#43a047">
         <dc:Bounds x="302" y="182" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -183,6 +164,26 @@ next(null, authToken);</camunda:script>
         <dc:Bounds x="570" y="370" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1epcc34_di" bpmnElement="Flow_1epcc34">
+        <di:waypoint x="500" y="200" />
+        <di:waypoint x="535" y="200" />
+        <di:waypoint x="535" y="410" />
+        <di:waypoint x="570" y="410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18b6pju_di" bpmnElement="Flow_18b6pju">
+        <di:waypoint x="670" y="410" />
+        <di:waypoint x="695" y="410" />
+        <di:waypoint x="695" y="200" />
+        <di:waypoint x="720" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11akaox_di" bpmnElement="Flow_11akaox">
+        <di:waypoint x="338" y="200" />
+        <di:waypoint x="400" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1rhino0_di" bpmnElement="Flow_1rhino0">
+        <di:waypoint x="820" y="200" />
+        <di:waypoint x="882" y="200" />
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
