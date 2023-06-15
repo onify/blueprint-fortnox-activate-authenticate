@@ -47,7 +47,7 @@
       <bpmn:script>const redirectURI = encodeURIComponent(environment.variables.input.redirectURI);
 const scopes = encodeURIComponent(environment.variables.input.scopes);
 
-const activateUrl = `https://apps.fortnox.se/oauth-v1/auth?client_id=${environment.output.fortnoxSettings._fortnox_app_clientid}&amp;redirect_uri=${redirectURI}&amp;scope=${scopes}&amp;state=onifyrox&amp;access_type=offline&amp;response_type=code`
+const activateUrl = `https://apps.fortnox.se/oauth-v1/auth?client_id=${environment.output.fortnoxSettings._fortnox_app_clientid}&amp;redirect_uri=${redirectURI}&amp;scope=${scopes}&amp;state=onifyrox&amp;access_type=offline&amp;response_type=code&amp;account_type=service`
 
 next(null, activateUrl);</bpmn:script>
     </bpmn:scriptTask>
